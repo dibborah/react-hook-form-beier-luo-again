@@ -1,18 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
 
-let renderCount = 0;
-
-type FieldValues = {
+type FormFields = {
   firstname: string;
   lastname: string;
+  age: number;
 }
 
+let renderCount = 0;
 const App = () => {
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<FieldValues>({
+  const { register, handleSubmit, formState: { errors } } = useForm<FormFields>({
     defaultValues: {
-      firstname: 'bill',
-      lastname: 'luo',
+      firstname: '',
+      lastname: '',
+      age: 0,
     }
   });
   renderCount++;
@@ -20,32 +21,24 @@ const App = () => {
     console.log(data);
   }
   console.log('errors', errors);
-  const firstName = watch('firstname');
-  console.log(firstName);
   return (
     <div>
       <div>
         <button type="button">{renderCount}</button>
       </div>
-      <p>FIRSTNAME: {firstName}</p>
       <form onSubmit={handleSubmit(onsubmit)}>
-        <div>
-          <input {...register("firstname", {
-            required: 'This is required'
-          })} placeholder="FirstName" />
-          {errors?.firstname && <div style={{ color: "red" }}>{errors?.firstname?.message}</div>}
-        </div>
-        <div>
-          <input {...register("lastname", {
-            required: 'This is required',
-            minLength: {
-              value: 3,
-              message: 'Min length of 3 is necessary'
-            },
-          })} placeholder="LastName"
-          />
-          {errors?.lastname && <div style={{ color: "red" }}>{errors?.lastname?.message}</div>}
-        </div>
+        <input {...register('firstname', { required: true })} placeholder="FirstName" />
+        <br />
+        <input {...register('lastname', {
+          required: true,
+          maxLength: {
+            value: 4,
+            message: 'Max length of 4 is required',
+          },
+        })} placeholder="LastName" />
+        <br />
+        <input type="number" {...register('age', { valueAsNumber: true})} placeholder="age" />
+        <br />
         <input type="submit" />
       </form>
     </div>
