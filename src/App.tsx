@@ -8,50 +8,70 @@ type FormFields = {
   age: number;
 };
 
+const sleep = async (ms: number) => {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 let renderCount = 0;
 const App = () => {
-  const { register, handleSubmit, watch } = useForm<FormFields>({
-    defaultValues: {
-      firstname: 'bill',
-      lastname: 'luo',
-      age: 6,
-    },
-  });
+  const { register, handleSubmit, formState,
+    formState: {
+      errors,
+      isDirty,
+      dirtyFields,
+      touchedFields,
+      isSubmitted,
+      isSubmitSuccessful,
+      submitCount,
+      isValid,
+      isSubmitting,
+      isValidating,
+    } } = useForm<FormFields>({
+      mode: 'onChange',
+      defaultValues: {
+        firstname: '',
+        lastname: '',
+      },
+    });
   renderCount++;
-  const onsubmit = (data: any) => {
+  const onsubmit = async (data: any) => {
+    await sleep(3000);
     console.log(data);
   }
-  // console.log(watch(['firstname', 'lastname', 'age']));
 
-  // useEffect(() => {
-  //   const subscription = watch((data) => {
-  //     console.log(data);
-  //   });
-  //   return () => {
-  //     subscription.unsubscribe();
-  //   }
-  // }, [watch]);
+  // console.log(errors);
+  // console.log('isDirty', isDirty);// Requires defaultValues to be passed to be able to compare the inputted values with the default values as a single source of truth
+  // console.log('dirtyFields', dirtyFields);
+  // console.log('touchFields', touchedFields);
+  // console.log('isubmitted', isSubmitted);
+  // console.log('isSubmittedSuccessful', isSubmitSuccessful);
+  // console.log('submitCount', submitCount);
+  console.log('isValid', isValid);
+  // console.log('isSubmitting', isSubmitting);
+  // console.log('isValidating', isValidating);
 
-  // Watch is better to use Inside the render than inside useEffect
-  // So watch is always to be used inside the render function not inside the useEffect
-  // That is the reccomended way
+  useEffect(() => {
+    // console.log('useEffect', formState.errors);
+  }, [formState]);
 
-  const firstname = watch('firstname');
   return (
     <div>
       <div>
         <button type="button">{renderCount}</button>
       </div>
-      <p>
-        {firstname === 'bill' ? 'wait' : 'donot wait'}
-      </p>
       <form onSubmit={handleSubmit(onsubmit)}>
         <br />
-        <input {...register('firstname')} placeholder="FirstName" />
+        <input {...register('firstname', {
+          validate: async () => {
+            // await sleep(1000);
+            return true;
+          },
+          required: true,
+        })} placeholder="FirstName" />
         <br />
-        <input {...register('lastname')} placeholder="lastname" />
-        <br />
-        <input {...register('age')} placeholder="age" />
+        <input {...register('lastname', { required: true })} placeholder="lastname" />
         <br />
         <br />
         <input type="submit" />
