@@ -1,60 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
-type FormFields = {
-  firstname: string;
-  lastname: string;
-  age: number;
-};
+// type FormFields = {
+//   firstname: string;
+//   lastname: string;
+//   age: number;
+// };
 
-const sleep = async (ms: number) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+type FormFields = {
+  yourDetails: {
+    firstName: string,
+    lastName: string,
+  }
+};
 
 let renderCount = 0;
 const App = () => {
-  const { register, handleSubmit, formState,
+  const {
+    register,
+    handleSubmit,
+    setValue,
     formState: {
-      errors,
-      isDirty,
-      dirtyFields,
-      touchedFields,
-      isSubmitted,
-      isSubmitSuccessful,
-      submitCount,
+      // isDirty,
+      // dirtyFields,
+      // touchedFields,
+      // errors,
       isValid,
-      isSubmitting,
-      isValidating,
-    } } = useForm<FormFields>({
-      mode: 'onChange',
-      defaultValues: {
-        firstname: '',
-        lastname: '',
+    }
+  } = useForm<FormFields>({
+    defaultValues: {
+      yourDetails: {
+        firstName: '',
+        lastName: '',
       },
-    });
+    },
+  });
+
   renderCount++;
   const onsubmit = async (data: any) => {
-    await sleep(3000);
     console.log(data);
   }
 
-  // console.log(errors);
-  // console.log('isDirty', isDirty);// Requires defaultValues to be passed to be able to compare the inputted values with the default values as a single source of truth
-  // console.log('dirtyFields', dirtyFields);
+  // console.log('isDirty, dirtyFields', isDirty, dirtyFields);
   // console.log('touchFields', touchedFields);
-  // console.log('isubmitted', isSubmitted);
-  // console.log('isSubmittedSuccessful', isSubmitSuccessful);
-  // console.log('submitCount', submitCount);
-  // console.log('isValid', isValid);
-  // console.log('isSubmitting', isSubmitting);
-  // console.log('isValidating', isValidating);
-
-  useEffect(() => {
-    // console.log('useEffect', formState.errors);
-  }, [formState]);
+  // console.log('errors', errors);
+  console.log('isValid', isValid);
 
   return (
     <div>
@@ -63,15 +53,36 @@ const App = () => {
       </div>
       <form onSubmit={handleSubmit(onsubmit)}>
         <br />
-        <input {...register('firstname', {
-          validate: async () => {
-            // await sleep(1000);
-            return true;
-          },
+        <input {...register('yourDetails.firstName', {
           required: true,
-        })} placeholder="FirstName" />
+        },)}
+          placeholder="FirstName"
+        />
         <br />
-        <input {...register('lastname', { required: true })} placeholder="lastname" />
+        <input {...register('yourDetails.lastName', {
+          required: true,
+        },)}
+          placeholder="lastName"
+        />
+        <br />
+        <br />
+        {/* <button onClick={() => {
+          setValue('firstname', 'billbill',
+            // { shouldDirty: true }
+            // { shouldTouch: true }
+            { shouldValidate: true }
+          )
+        }}>setValue</button> */}
+        <button onClick={() => {
+        //   setValue('yourDetails', {
+        //     firstName: 'bill',
+        //     lastName: 'luo',
+        //   }, 
+        //   // {shouldValidate: true}
+        // )
+        setValue('yourDetails.firstName', 'bill');
+        setValue('yourDetails.lastName', 'luo');
+        }}>setValue</button>
         <br />
         <br />
         <input type="submit" />
