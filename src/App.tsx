@@ -48,7 +48,7 @@ const App = () => {
   // console.log('isubmitted', isSubmitted);
   // console.log('isSubmittedSuccessful', isSubmitSuccessful);
   // console.log('submitCount', submitCount);
-  console.log('isValid', isValid);
+  // console.log('isValid', isValid);
   // console.log('isSubmitting', isSubmitting);
   // console.log('isValidating', isValidating);
 
