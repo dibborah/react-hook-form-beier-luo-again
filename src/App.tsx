@@ -9,35 +9,19 @@ type FormFields = {
 
 let renderCount = 0;
 const App = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<FormFields>({
-    defaultValues: {
-      firstname: '',
-      lastname: '',
-      age: 0,
-    }
-  });
+  const { register, handleSubmit, watch } = useForm<FormFields>();
   renderCount++;
   const onsubmit = (data: any) => {
     console.log(data);
   }
-  console.log('errors', errors);
   return (
     <div>
       <div>
         <button type="button">{renderCount}</button>
       </div>
       <form onSubmit={handleSubmit(onsubmit)}>
-        <input {...register('firstname', { required: true })} placeholder="FirstName" />
+        <input {...register('firstname')} placeholder="FirstName" />
         <br />
-        <input {...register('lastname', {
-          required: true,
-          maxLength: {
-            value: 4,
-            message: 'Max length of 4 is required',
-          },
-        })} placeholder="LastName" />
-        <br />
-        <input type="number" {...register('age', { valueAsNumber: true})} placeholder="age" />
         <br />
         <input type="submit" />
       </form>
