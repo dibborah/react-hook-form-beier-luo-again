@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useForm } from "react-hook-form";
 
 type FormFields = {
-  firstName: string,
-  lastName: string,
+  firstName: string;
+  customError: string;
 };
 
 let renderCount = 0;
@@ -11,17 +10,17 @@ const App = () => {
   const {
     register,
     handleSubmit,
-    trigger,
     formState: { errors },
+    setError,
   } = useForm<FormFields>({
     defaultValues: {
       firstName: '',
-      lastName: ''
     },
+    // criteriaMode: 'all',
   });
 
   renderCount++;
-  const onsubmit = async (data: any) => {
+  const onsubmit = async (data: FormFields) => {
     console.log(data);
   }
 
@@ -33,51 +32,61 @@ const App = () => {
       </div>
       <form onSubmit={handleSubmit(onsubmit)}>
         <br />
-        <input {...register('firstName', {
-          required: true,
-          minLength: 6,
-        })}
+        <input {...register('firstName')}
           placeholder="FirstName"
         />
         <br />
         <br />
-        <input {...register('lastName', {
-          required: true,
-          minLength: 6,
-        })}
-          placeholder="LastName"
-        />
-        <br />
-        
-        {/* Calling trigger validate api on single fields multiple fields and on the 
-        entire form */}
 
-        {/* <button type="button" onClick={() => {
-          // trigger('firstName')
-          // trigger(['firstName', 'lastName'])
-          trigger()// Triggering the validation for the entire form
-        }}>trigger</button> */}
-        
-        {/* Calling trigger asynchronously */}
-
+        {/* Single custom error message */}
         {/* <button type="button"
-          onClick={async () => {
-            const output = await trigger();
-            console.log('output', output);
+          onClick={() => {
+            setError('firstName', {
+              type: 'custom',
+              message: 'Something went wrong'
+            })
           }}
         >
-          trigger
+          setError
         </button> */}
-        <button type="button"
-          onClick={async () => {
-            const output = await trigger('lastName', {
-              shouldFocus: true,
-            });
-            console.log('output', output);
+
+        {/* Multiple custom error message */}
+        {/* <button
+          type="button"
+          onClick={() => {
+            setError('firstName', {
+              types: {
+                test: 'test went wrong',
+                test1: 'test1 went wrong',
+              }
+            })
           }}
         >
-          trigger
-        </button>
+          setError
+        </button> */}
+
+        {/* Creating custom error validation */}
+        {/* <button type="button"
+        onClick={() => {
+          setError("customError", {
+            type: 'server side',
+            message: 'server side error'
+          })
+        }}>setError</button>
+        <br /> */}
+        <button type="button"
+        onClick={() => {
+          setError("firstName", {
+            type: 'server side',
+            message: 'server side error'
+          }, {
+            shouldFocus: true,
+          })
+        }}>setError</button>
+        <br />
+        {/* <p>{errors.firstName?.types?.test}</p>
+        <p>{errors.firstName?.types?.test1}</p> */}
+        <p>{errors.customError?.message}</p>
         <br />
         <input type="submit" />
       </form>
