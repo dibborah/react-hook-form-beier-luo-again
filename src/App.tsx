@@ -41,6 +41,12 @@ const App = () => {
 
   console.log('isSubmittedSuccessful', formState.isSubmitSuccessful);
 
+  // Difference between setValue API and reset API
+  // setValue API is good when doing single value update
+  // But reset is good when doing bulk update to your entire form
+  // setValue => Doesnot wipe out existing form states
+  // reset => Wipe out existing form states
+
   return (
     <div>
       <div>
