@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 type FormFields = {
@@ -12,10 +11,6 @@ const App = () => {
   const {
     register,
     handleSubmit,
-    reset,
-    formState,
-    // getValues,
-    setValue,
   } = useForm<FormFields>({
     defaultValues: {
       firstName: '',
@@ -27,25 +22,6 @@ const App = () => {
   const onsubmit = async (data: any) => {
     console.log(data);
   }
-
-  console.log('isDirty', formState.isDirty);
-
-  // useEffect(() => {
-  //   if(formState.isSubmitSuccessful){
-  //     reset({
-  //       firstName: 'bill101',
-  //       lastName: 'luo101',
-  //     })
-  //   }
-  // }, [formState, reset]);
-
-  console.log('isSubmittedSuccessful', formState.isSubmitSuccessful);
-
-  // Difference between setValue API and reset API
-  // setValue API is good when doing single value update
-  // But reset is good when doing bulk update to your entire form
-  // setValue => Doesnot wipe out existing form states
-  // reset => Wipe out existing form states
 
   return (
     <div>
@@ -62,25 +38,6 @@ const App = () => {
           placeholder="LastName"
         />
         <br />
-        {/* <button type="button" onClick={() => {
-          reset({
-            ...getValues(),
-            lastName: 'luo + bill'
-          },{
-            // keepDefaultValues: true
-          });
-        }}>Reset</button> */}
-        <button onClick={() => {
-          setValue('firstName', 'billSetValue');
-          setValue('lastName', 'luoSetValeue');
-        }}>SetValue</button>
-        <br />
-        <button onClick={() => {
-          reset({
-            firstName: 'billReset',
-            lastName: 'luoReset'
-          })
-        }}>Reset</button>
         <br />
         <input type="submit" />
       </form>
