@@ -14,7 +14,7 @@ const App = () => {
     handleSubmit,
     reset,
     formState,
-    getValues,
+    // getValues,
     setValue,
   } = useForm<FormFields>({
     defaultValues: {
