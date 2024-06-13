@@ -9,10 +9,15 @@ const App = () => {
   const {
     register,
     handleSubmit,
+    reset,
+    getValues,
+    resetField,
+    formState: { errors, isValid }
   } = useForm<FormFields>({
     defaultValues: {
       firstName: '',
     },
+    mode: 'onChange',
   });
 
   renderCount++;
@@ -21,6 +26,10 @@ const App = () => {
     console.log(data);
   };
 
+  // reset({
+  //   ...getValues, firstName: 'bill'
+  // });
+
   return (
     <div>
       <div>
@@ -28,10 +37,26 @@ const App = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <br />
-        <input {...register('firstName')}
+        <input autoComplete="off" {...register('firstName', {
+          required: 'This is required',
+          minLength: {
+            value: 6,
+            message: 'This needs to be min length of 6',
+          }
+        })}
           placeholder="FirstName"
         />
         <br />
+        <p>{errors?.firstName?.message}</p>
+        <p>{isValid ? 'Valid' : 'Not Valid'}</p>
+        <button
+          type="button"
+          onClick={() => resetField('firstName', {
+            keepError: true
+          })}
+        >Reset Field</button>
+        {/* <button type="button" onClick={() => resetField('firstName')}>Reset Field</button> */}
+        {/* <button onClick={() => reset()}>Reset Field</button> */}
         <br />
         <input type="submit" />
         <br />
