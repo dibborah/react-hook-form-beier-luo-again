@@ -4,11 +4,11 @@ type FormFields = {
   firstName: string;
 };
 
-const sleep = async (ms: number) => {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
+// const sleep = async (ms: number) => {
+//   return new Promise((resolve) => {
+//     setTimeout(resolve, ms);
+//   });
+// }
 
 let renderCount = 0;
 const App = () => {
