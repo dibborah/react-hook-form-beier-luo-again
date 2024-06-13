@@ -9,15 +9,16 @@ const App = () => {
   const {
     register,
     handleSubmit,
-    // reset,
+    reset,
     // getValues,
     resetField,
     formState: { errors, isValid },
     formState: { isDirty, dirtyFields }
+    // formState: { touchedFields }
   } = useForm<FormFields>({
     defaultValues: {
-      firstName: 'bill',
-      // firstName: '',
+      // firstName: 'bill',
+      firstName: '',
     },
     mode: 'onChange',
   });
@@ -35,6 +36,7 @@ const App = () => {
   // });
 
   console.log('isDirty, dirtyFields', isDirty, dirtyFields);
+  // console.log('touchedFields', touchedFields);
 
   return (
     <div>
@@ -59,11 +61,12 @@ const App = () => {
           type="button"
           onClick={() => resetField('firstName', {
             // keepError: true
-            keepDirty: true,
+            // keepDirty: true,
+            // keepTouched: true,
           })}
         >Reset Field</button>
         {/* <button type="button" onClick={() => resetField('firstName')}>Reset Field</button> */}
-        {/* <button onClick={() => reset()}>Reset Field</button> */}
+        {/* <button type="button" onClick={() => reset()}>Reset Field</button> */}
         <br />
         <input type="submit" />
         <br />
