@@ -9,18 +9,22 @@ const App = () => {
   const {
     register,
     handleSubmit,
-    reset,
-    getValues,
+    // reset,
+    // getValues,
     resetField,
-    formState: { errors, isValid }
+    formState: { errors, isValid },
+    formState: { isDirty, dirtyFields }
   } = useForm<FormFields>({
     defaultValues: {
-      firstName: '',
+      firstName: 'bill',
+      // firstName: '',
     },
     mode: 'onChange',
   });
 
   renderCount++;
+
+  // ### RHF compares with default values as source of TRUTH 
 
   const onSubmit = async (data: FormFields) => {
     console.log(data);
@@ -29,6 +33,8 @@ const App = () => {
   // reset({
   //   ...getValues, firstName: 'bill'
   // });
+
+  console.log('isDirty, dirtyFields', isDirty, dirtyFields);
 
   return (
     <div>
@@ -52,7 +58,8 @@ const App = () => {
         <button
           type="button"
           onClick={() => resetField('firstName', {
-            keepError: true
+            // keepError: true
+            keepDirty: true,
           })}
         >Reset Field</button>
         {/* <button type="button" onClick={() => resetField('firstName')}>Reset Field</button> */}
