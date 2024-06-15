@@ -1,27 +1,65 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useEffect, useState } from "react";
+import { useForm, useFormState, useWatch } from "react-hook-form";
 
 type FormFields = {
   firstName: string;
-  checkbox: boolean;
+  lastName: string;
 };
 
+const Controller = ({ control, register, render, name, rules }: any) => {
+  const props = register(name, rules);
+  const value = useWatch({
+    control,
+    name,
+  })
+  const { errors } = useFormState({
+    control,
+    name,
+  })
+
+  console.log('errors', errors);
+  return render({
+    value,
+    onChange: (e: any) => props.onChange({
+      target: {
+        name,
+        value: e.target.value,
+      }
+    }),
+    onBlur: props.onBlur,
+    name: props.name,
+  })
+}
+
+const Input = (props: any) => {
+  const [value, setValue] = useState(props.value || '');
+
+  React.useEffect(() => {
+    setValue(props.value);
+  }, [props.value]);// Asynchronous 'duo' update is done using this useEffect
+
+  return <input
+    onChange={(e) => {
+      setValue(e.target.value)
+      props.onChange && props.onChange(e)
+    }}
+    value={value}
+  />
+}
 let renderCount = 0;
 const App = () => {
   const {
     register,
     handleSubmit,
-    watch,
-    unregister,
-    formState: { errors }
+    control,
+    setValue,
+    // formState: {errors}
   } = useForm<FormFields>({
     defaultValues: {
       firstName: '',
-      checkbox: true,
+      lastName: 'test',// This is working because of using the useWatch hook
     },
-    mode: 'onChange',
-    // shouldUnregister: false,// by default
-    // shouldUnregister: true,
   });
 
   renderCount++;
@@ -29,22 +67,16 @@ const App = () => {
   const onSubmit = async (data: FormFields) => {
     console.log(data);
   };
+  
+  // console.log('errors', errors);
 
-  const checkbox = watch('checkbox');
-
-  console.log("checkbox", checkbox);
+  // setValue('lastName', 'bill');
 
   React.useEffect(() => {
-    if (!checkbox) {
-      // unregister(['firstName', 'lastName'], {// When multiple inputs needs to be unregistered// Put them in an array
-      unregister('firstName', {
-        // keepError: true
-      });
-    }
-  }, [unregister, checkbox]);
-
-  console.log('errors', errors);
-
+    setTimeout(() => {
+      setValue('lastName', 'duo');// This line or useEffect is woking becuase of the useEffect in <Input /> component
+    }, 1000)
+  }, [setValue]);
   return (
     <div>
       <div>
@@ -52,14 +84,19 @@ const App = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <br />
-        {checkbox && <input autoComplete="off" {...register('firstName', {
-          required: true,
-        })}
+        <input autoComplete="off" {...register('firstName')}
           placeholder="FirstName"
-        />}
+        />
         <br />
-        <br />
-        <input type="checkbox" {...register('checkbox')} />
+        <Controller {...{
+          register,
+          control,
+          rules: {
+            required: true
+          },
+          name: 'lastName',
+          render: (props: any) => <Input {...props} />
+        }} />
         <br />
         <input type="submit" />
         <br />
