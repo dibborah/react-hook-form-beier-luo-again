@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useFieldArray, useForm } from "react-hook-form";
+import { Control, useFieldArray, useForm, useWatch } from "react-hook-form";
 
 type FormFields = {
   cart: {
@@ -8,12 +8,30 @@ type FormFields = {
   }[]
 };
 
+const getTotalAmount = (payload: FormFields['cart']) => {
+  let total = 0
+  for(const item of payload) {
+    total = total + (Number.isNaN(item.amount) ? 0 : item.amount);
+  }
+  return total;
+}
+
+const TotolAmount = ({ control }: { control: Control<FormFields> }) => {
+  const cartValues = useWatch({
+    name: 'cart',
+    control,
+  })
+  console.log('cartValues', cartValues);
+  return <p>{getTotalAmount(cartValues)}</p>;
+}
+
 let renderCount = 0;
 const App = () => {
   const {
     register,
     handleSubmit,
     control,
+    formState: { errors },
   } = useForm<FormFields>({
     defaultValues: {
       cart: [{
@@ -26,6 +44,9 @@ const App = () => {
   const { fields, append, prepend, remove } = useFieldArray({
     name: 'cart',
     control,
+    rules: {
+      required: 'please append at least one field array',
+    }
   })
 
   renderCount++;
@@ -41,12 +62,12 @@ const App = () => {
       </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <br />
-        {fields.map((item, index) => {
+        {fields.map((field, index) => {
           return (
-            <section key={index}>
+            <section key={field.id}>
               <label>
                 <span>Name</span>
-                <input type="text" {...register(`cart.${index}.name`)} />
+                <input type="text" {...register(`cart.${index}.name`, { required: true })} />
               </label>
               <br />
               <br />
@@ -57,18 +78,6 @@ const App = () => {
               <br />
               <br />
               <button type="button" onClick={() => {
-                append({
-                  name: 'append',
-                  amount: 0,
-                })
-              }}>Append</button>
-              <button type="button" onClick={() => {
-                prepend({
-                  name: 'prepend',
-                  amount: 0,
-                })
-              }}>Prepend</button>
-              <button type="button" onClick={() => {
                 remove(index)
               }}>Delete</button>
               <hr />
@@ -76,6 +85,22 @@ const App = () => {
           )
         })}
         <br />
+        <button type="button" onClick={() => {
+          append({
+            name: 'append',
+            amount: 0,
+          })
+        }}>Append</button>
+        <button type="button" onClick={() => {
+          prepend({
+            name: 'prepend',
+            amount: 0,
+          })
+        }}>Prepend</button>
+        <TotolAmount control={control} />
+        <p>
+          {errors?.cart?.root?.message}
+        </p>
         <input type="submit" />
         <br />
       </form>
